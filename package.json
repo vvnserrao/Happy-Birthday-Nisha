@@ -1,0 +1,21 @@
+{
+  "name": "birthday-gift-webpage",
+  "version": "1.0.0",
+  "description": "An interactive birthday webpage featuring a gift box theme with animations and sound effects.",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "live-server src"
+  },
+  "keywords": [
+    "birthday",
+    "webpage",
+    "interactive",
+    "animations",
+    "sound effects"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  }
+}

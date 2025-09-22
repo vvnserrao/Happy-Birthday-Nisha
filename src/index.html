@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Treasure Hunt 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #c4b5fd;
+            --accent: #ffd700;
+            --background: #f3f4f6;
+            --text: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--background), #fff);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Treasure Hunt Section */
+        .treasure-hunt {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            transition: all 0.5s ease;
+        }
+
+        .treasure-hunt.fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .input-group {
+            margin: 2rem 0;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            border: 2px solid var(--secondary);
+            border-radius: 25px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        button:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ef4444;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hint {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .unlock-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: var(--text);
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .unlock-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .quiz-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quiz-content {
+            background: linear-gradient(135deg, #fff, #f8f7ff);
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: modalPop 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 2px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+            padding: 5px;
+            line-height: 1;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .close-button:hover {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+
+        .hint-button {
+            background: none;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hint-button:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .hint {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            font-style: italic;
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform: translateY(-10px);
+        }
+
+        .hint.show {
+            opacity: 0.8;
+            transform: translateY(0);
+        }
+
+        .quiz-step {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+            display: none;
+        }
+
+        .quiz-step.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .quiz-step h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .quiz-step p {
+            color: var(--text);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .reaction-emoji {
+            font-size: 4rem;
+            margin: 1rem 0;
+            animation: bounce 1s infinite;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .quiz-step {
+            display: none;
+        }
+
+        .quiz-step.active {
+            display: block;
+        }
+
+        .reaction-emoji {
+            font-size: 3rem;
+            margin: 1rem 0;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--secondary);
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Birthday Section */
+        .birthday-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .birthday-section.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .moon-section {
+            text-align: center;
+            margin: 3rem 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            padding: 4rem 2rem;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .moon-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="white"/></svg>') repeat;
+            opacity: 0.3;
+            animation: twinkle 4s infinite;
+        }
+
+        .moon-container {
+            margin: 2rem 0;
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            padding: 30px;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3),
+                        inset 0 0 100px rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .moon-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            animation: moonRotate 20s linear infinite, moonGlow 4s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4),
+                        inset -10px -10px 40px rgba(0, 0, 0, 0.5);
+            transform: translateZ(20px);
+        }
+
+        .moon-description {
+            max-width: 700px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateZ(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .moon-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #fff;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .moon-description::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotateGradient 10s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateGradient {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 3rem 0 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .journey-section {
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, #f6f3ff 0%, #fff 50%, #f0f7ff 100%);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            margin: 3rem auto;
+        }
+
+        .journey-section::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%238b5cf6" fill-opacity="0.1" d="M10 30c5-10 15-10 20 0s15 10 20 0 15-10 20 0 15 10 20 0"/></svg>') repeat-x;
+            opacity: 0.5;
+            animation: floatingBalloons 20s linear infinite;
+        }
+
+        @keyframes floatingBalloons {
+            from { background-position: 0 0; }
+            to { background-position: 100% 0; }
+        }
+
+        .journey-text-container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8));
+            padding: 2.5rem;
+            border-radius: 30px;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+            position: relative;
+            z-index: 1;
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            backdrop-filter: blur(10px);
+            transform: translateY(-20px);
+        }
+
+        .journey-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            line-height: 1.6;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.02); }
+        }
+
+        .photo-caption {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin: 1rem 0;
+            font-style: italic;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .memories-section {
+            padding: 3rem 0;
+            background: rgba(255,255,255,0.5);
+            border-radius: 20px;
+            margin: 3rem 0;
+        }
+
+        .memories-text {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+        }
+
+        .memory-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .memory-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-card:hover .memory-caption {
+            transform: translateY(0);
+        }
+
+        @keyframes moonRotate {
+            from { transform: translateZ(20px) rotateY(0deg); }
+            to { transform: translateZ(20px) rotateY(360deg); }
+        }
+
+        @keyframes moonGlow {
+            0%, 100% { 
+                transform: translateZ(20px) scale(1);
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            }
+            50% { 
+                transform: translateZ(20px) scale(1.02);
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        .age-display {
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 1rem 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .direct-access {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .direct-access:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .journey-photos {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            margin: 8rem auto;
+            padding: 2rem;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .journey-photos::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 450px;
+            height: 450px;
+            border: 3px dashed var(--primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            opacity: 0.5;
+            animation: rotateCircle 30s linear infinite;
+        }
+
+        @keyframes rotateCircle {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .journey-photo {
+            position: absolute;
+            width: 160px;
+            padding: 1rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            z-index: 1;
+            transform-style: preserve-3d;
+        }
+
+        .journey-photo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 25px;
+            opacity: 0;
+            z-index: -1;
+            transition: all 0.4s ease;
+        }
+
+        .journey-photo:hover::before {
+            opacity: 1;
+        }
+
+        .journey-photo:nth-child(1) { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(0deg) translateX(-220px) rotate(0deg); }
+        .journey-photo:nth-child(2) { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(72deg) translateX(-220px) rotate(-72deg); }
+        .journey-photo:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(144deg) translateX(-220px) rotate(-144deg); }
+        .journey-photo:nth-child(4) { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(216deg) translateX(-220px) rotate(-216deg); }
+        .journey-photo:nth-child(5) { top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(288deg) translateX(-220px) rotate(-288deg); }
+
+        .journey-photo:hover {
+            transform: translate(-50%, -50%) rotate(var(--rotation)) translateX(-210px) rotate(calc(-1 * var(--rotation))) scale(1.1);
+            z-index: 2;
+        }
+
+        .timeline-image {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border: 4px solid white;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .journey-photo:hover .timeline-image {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .photo-year {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: white;
+            border-radius: 25px;
+            padding: 0.4rem 1.2rem;
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary);
+        }
+
+        .journey-photo:hover .photo-year {
+            transform: translateX(-50%) scale(1.1);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Add connecting lines and decorations */
+        .journey-photos::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 440px;
+            height: 440px;
+            border: 2px solid var(--secondary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        /* Removed center sparkle */
+
+        /* Add floating balloons */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Removed floating balloon animations */
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .journey-photos {
+                width: 400px;
+                height: 400px;
+                transform: scale(0.7);
+                margin: 0 auto;
+            }
+            
+            .journey-photos::before {
+                width: 300px;
+                height: 300px;
+            }
+
+            .journey-text {
+                font-size: 1.3rem;
+                margin: 1rem auto;
+            }
+
+            .journey-text-container {
+                margin: 2rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .journey-photos {
+                transform: scale(0.5);
+                margin: -100px auto;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1025px) {
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .journey-photos {
+                transform: scale(1);
+            }
+        }
+
+        /* Tablet and smaller desktop */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 2rem;
+            }
+            .journey-photos {
+                transform: scale(0.8);
+            }
+            .message {
+                margin: 3rem 2rem;
+            }
+        }
+
+        /* Tablet */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            .journey-photos {
+                transform: scale(0.7);
+                margin: 0 auto;
+            }
+            .message {
+                margin: 2rem 1rem;
+            }
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .future-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .birthday-title h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            .journey-photos {
+                transform: scale(0.5);
+                margin: -50px auto;
+            }
+            .journey-text {
+                font-size: 1rem;
+                padding: 0.8rem;
+            }
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            .future-cards {
+                grid-template-columns: 1fr;
+            }
+            .birthday-title h2 {
+                font-size: 2rem;
+            }
+            .message {
+                margin: 1.5rem 0.5rem;
+                padding: 1.5rem;
+            }
+        }
+
+        .message {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .future-glimpses {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f0f7ff 0%, #fff 50%, #fff1f9 100%);
+            border-radius: 30px;
+            margin: 4rem auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .future-text {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin: 1rem auto 3rem;
+            max-width: 800px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        .timeline-scroll {
+            padding: 2rem 0;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+
+        .future-cards {
+            display: grid;
+            grid-template-rows: auto auto;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding: 1rem 2rem;
+        }
+
+        .future-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .future-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .future-image-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .future-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .year-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .future-caption {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .future-caption h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .future-caption p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .disclaimer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        /* Add some decorative elements */
+        .future-glimpses::before {
+            content: '🎯';
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .future-glimpses::after {
+            content: '🔮';
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+            animation-delay: 1.5s;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .photo-carousel {
+                height: 200px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .future-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .future-image {
+                height: 250px;
+            }
+
+            .future-caption h3 {
+                font-size: 1.1rem;
+            }
+
+            @media (max-width: 480px) {
+                .future-cards {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .future-text {
+                font-size: 1.1rem;
+                padding: 0 1rem;
+            }
+        }
+        /* Enhanced Mobile Responsiveness for Journey Section */
+        @media screen and (max-width: 480px) {
+            .journey-section {
+                padding: 1rem;
+                margin: 1rem 0.5rem;
+                border-radius: 20px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 1rem;
+            }
+
+            .journey-text-container {
+                padding: 0.8rem;
+                margin: 0.5rem auto;
+                width: 90%;
+            }
+
+            .journey-text {
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+
+            .journey-photos {
+                width: 300px;
+                height: 300px;
+                transform: scale(0.65);
+                margin: -30px auto;
+            }
+
+            .journey-photo {
+                width: 120px;
+                padding: 0.6rem;
+            }
+
+            .timeline-image {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 0.5rem;
+            }
+
+            .photo-year {
+                font-size: 0.9rem;
+                padding: 0.3rem 0.8rem;
+                bottom: -12px;
+            }
+        }
+
+        /* Tablet Optimization */
+        @media screen and (min-width: 481px) and (max-width: 768px) {
+            .journey-section {
+                padding: 1.5rem;
+                margin: 2rem 1rem;
+            }
+
+            .journey-photos {
+                width: 400px;
+                height: 400px;
+                transform: scale(0.8);
+                margin: 1rem auto;
+            }
+
+            .journey-photo {
+                width: 140px;
+                padding: 0.8rem;
+            }
+
+            .timeline-image {
+                width: 120px;
+                height: 120px;
+            }
+        }
+        /* Updated Journey Text Styles */
+        .journey-text-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 1rem auto;
+            max-width: 800px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .journey-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin: 0;
+            line-height: 1.6;
+            padding: 0.5rem;
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .journey-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .journey-text {
+                font-size: 1rem;
+                padding: 0.3rem;
+            }
+            
+            .journey-text-container {
+                padding: 0.8rem;
+                margin: 0.8rem auto;
+            }
+        }
+        /* Enhanced Mobile Spacing Fixes */
+        @media screen and (max-width: 480px) {
+            .journey-section {
+                padding: 1rem;
+                margin: 2rem 0.5rem;
+                min-height: 500px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .journey-text-container {
+                padding: 1rem;
+                margin: 1rem auto 2rem;
+                width: 90%;
+                z-index: 2;
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            .journey-photos {
+                width: 320px;
+                height: 320px;
+                transform: scale(0.7);
+                margin: 2rem auto;
+                position: relative;
+            }
+
+            .journey-photo {
+                width: 110px;
+                padding: 0.5rem;
+            }
+
+            .timeline-image {
+                width: 90px;
+                height: 90px;
+                margin-bottom: 0.5rem;
+            }
+
+            .photo-year {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.8rem;
+                bottom: -10px;
+            }
+
+            /* Adjust vertical spacing between sections */
+            .section-title {
+                margin-bottom: 1.5rem;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Small height screens */
+        @media screen and (max-height: 700px) and (max-width: 480px) {
+            .journey-section {
+                margin: 1rem 0.5rem;
+                padding-bottom: 3rem;
+            }
+
+            .journey-photos {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Birthday Content -->
+        <div class="birthday-section show" id="birthdaySection">
+            <div class="moon-section">
+                <div class="moon-container">
+                    <img src="../images/moon-23092002.jpg" alt="Moon from Birth Date" class="moon-image">
+                </div>
+                <div class="moon-description">
+                    <p class="moon-text">On September 23, 2002, as the world welcomed you, 
+                    this was the exact moon that graced the night sky. A beautiful crescent moon, 
+                    shining bright like a celestial blessing on your very first day. 
+                    Just like this moon, you've been illuminating our lives ever since. ✨🌙</p>
+                </div>
+                <div class="age-display" id="ageDisplay"></div>
+            </div>
+
+            <div class="journey-section">
+                <h2 class="section-title">Your Beautiful Journey 🌟</h2>
+                <div class="journey-text-container">
+                    <p class="journey-text">From an adorable little angel to the amazing person you are today...</p>
+                </div>
+                <div class="journey-photos">
+                    <div class="journey-photo" style="--rotation: 0deg;">
+                        <img src="../images/pic1.png" alt="Little Angel" class="timeline-image">
+                        <p class="photo-year">2003 ✨</p>
+                    </div>
+                    <div class="journey-photo" style="--rotation: 72deg;">
+                        <img src="../images/new1.jpeg" alt="Growing Years" class="timeline-image">
+                        <p class="photo-year">2008 🌸</p>
+                    </div>
+                    <div class="journey-photo" style="--rotation: 144deg;">
+                        <img src="../images/new2.jpeg" alt="Sweet Memories" class="timeline-image">
+                        <p class="photo-year">2012 💫</p>
+                    </div>
+                    <div class="journey-photo" style="--rotation: 216deg;">
+                        <img src="../images/neew3.jpeg" alt="Elegant Beauty" class="timeline-image">
+                        <p class="photo-year">2018 🌟</p>
+                    </div>
+                    <div class="journey-photo" style="--rotation: 288deg;">
+                        <img src="../images/saree1.jpeg" alt="Proud Graduate" class="timeline-image">
+                        <p class="photo-year">2025 </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="birthday-title">
+                    <h2>Happy Birthday Nisha!</h2>
+                </div>
+                <div class="message-content">
+                    <p>
+                        From your first steps to your latest achievements, 
+                        every moment of your journey has been incredible to witness. 
+                        Your smile still carries the same innocence as when you were little, 
+                        but now it's accompanied by the wisdom and grace you've gained over these beautiful years. 
+                    </p>
+                    <p class="highlight-text">
+                        Here's to celebrating the amazing person you've become! 🌟
+                    </p>
+                    <div class="decorative-line"></div>
+                </div>
+            </div>
+
+            <style>
+                .message {
+                    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8));
+                    padding: 3rem;
+                    border-radius: 30px;
+                    margin: 4rem auto;
+                    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+                    position: relative;
+                    max-width: 800px;
+                    border: 2px solid rgba(139, 92, 246, 0.2);
+                }
+
+                .birthday-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                }
+
+                .birthday-title h2 {
+                    font-family: 'Great Vibes', cursive;
+                    font-size: 3.5rem;
+                    color: transparent;
+                    background: linear-gradient(45deg, #ff6b6b, #8b5cf6, #ec4899);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    margin: 0;
+                    padding: 0;
+                    text-align: center;
+                }
+
+                .sparkle-text {
+                    font-size: 2rem;
+                    animation: twinkle 1.5s ease-in-out infinite;
+                }
+
+                .message-content {
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 1.2rem;
+                    line-height: 1.8;
+                    color: #4a5568;
+                    text-align: center;
+                }
+
+                .highlight-text {
+                    font-family: 'Dancing Script', cursive;
+                    font-size: 1.8rem;
+                    color: #8b5cf6;
+                    margin-top: 2rem;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+                }
+
+                .decorative-line {
+                    height: 3px;
+                    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+                    margin: 2rem auto;
+                    max-width: 200px;
+                }
+
+                @keyframes twinkle {
+                    0%, 100% { opacity: 1; transform: scale(1); }
+                    50% { opacity: 0.5; transform: scale(1.2); }
+                }
+            </style>
+
+            <div class="future-glimpses">
+                <h2 class="section-title">Future Birthday Snaps! 🚀</h2>
+                <p class="future-text">Hey! We asked AI to imagine how you might look in the future... and wow, looks like you're going to rock every decade! �</p>
+                
+                <div class="timeline-scroll">
+                    <div class="future-cards">
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/33.png" alt="Age 33" class="future-image">
+                                <div class="year-badge">2035</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>33 Years</h3>
+                            </div>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/43.png" alt="Age 43" class="future-image">
+                                <div class="year-badge">2045</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>43 Years</h3>
+                            </div>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/53.png" alt="Age 53" class="future-image">
+                                <div class="year-badge">2055</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>53 Years</h3>
+                            </div>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/63.png" alt="Age 63" class="future-image">
+                                <div class="year-badge">2065</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>63 Years</h3>
+                            </div>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/73.png" alt="Age 73" class="future-image">
+                                <div class="year-badge">2075</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>73 Years</h3>
+                            </div>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/83.png" alt="Age 83" class="future-image">
+                                <div class="year-badge">2085</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>83 Years</h3>
+                            </div>
+                        </div>
+                        
+
+                        <!-- <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/63.png" alt="Age 63" class="future-image">
+                                <div class="year-badge">2065</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>63 Years</h3>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/73.png" alt="Age 73" class="future-image">
+                                <div class="year-badge">2075</div>
+                            </div>
+                            <div class="future-caption">
+                               <h3>73 Years</h3>
+                        </div>
+
+                        <div class="future-card">
+                            <div class="future-image-container">
+                                <img src="../images/83.png" alt="Age 83" class="future-image">
+                                <div class="year-badge">2085</div>
+                            </div>
+                            <div class="future-caption">
+                                <h3>83 Years</h3>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="memories-section">
+                <h2 class="section-title">Precious Memories</h2>
+                <p class="memories-text">Some golden moments from your wonderful life journey...</p>
+                <div class="gallery">
+                    <div class="memory-card">
+                        <img src="../images/diwali.jpeg" alt="Memory 1" class="gallery-image">
+                        <p class="memory-caption">Celebrating Diwali with lights and joy</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/family.jpeg" alt="Memory 1" class="gallery-image">
+                        <p class="memory-caption">Beautiful moments with family</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/frnds.jpeg" alt="Memory 1" class="gallery-image">
+                        <p class="memory-caption">Forever friends, forever memories 👯</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/frnds1.jpeg" alt="Memory 1" class="gallery-image">
+                        <p class="memory-caption">Christmas celebrations with friends 🎄</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/fun1.jpeg" alt="Memory 2" class="gallery-image">
+                        <p class="memory-caption">Fun times and crazy laughs 😄</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/prize.jpeg" alt="Memory 3" class="gallery-image">
+                        <p class="memory-caption">Achievement unlocked! �</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/bday1.jpeg" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">Birthday sparkles 2022 ✨🎂</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/bady2.jpeg" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">Making wishes come true 2023 �</p>
+                    </div>
+                     <div class="memory-card">
+                        <img src="../images/faculty.jpeg" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">Inspiring minds as a teacher 📚</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/maam.jpeg" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">With my favorite professor 🌟</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/mammma.jpeg" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">Mom's love is the greatest blessing ❤️</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/candid.jpeg" alt="Memory 3" class="gallery-image">
+                        <p class="memory-caption">Candid moments, genuine smiles 😊</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/saree_new.png" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">Elegant in traditional wear 👗</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/faculty_group_pic.jpeg" alt="Memory 4" class="gallery-image">
+                        <p class="memory-caption">Proud mentor with my students 👩‍🏫</p>
+                    </div>
+                    <div class="memory-card">
+                        <img src="../images/convocation.jpeg" alt="Memory 3" class="gallery-image">
+                        <p class="memory-caption">Graduation day - Dreams achieved! 🎓</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="unlock-button" onclick="startQuiz()">🎁 Unlock Your Special Birthday Surprise!</button>
+
+        <!-- Quiz Modal -->
+        <div class="quiz-modal" id="quizModal">
+            <div class="quiz-content">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <!-- Quiz Step 1 -->
+                <div class="quiz-step active" id="step1">
+                    <button class="close-button" onclick="closeQuiz()">×</button>
+                    <div class="reaction-emoji">�</div>
+                    <h3>Birth Time Check!</h3>
+                    <p>At what time exactly were you born? (Format: H.MM PM)</p>
+                    <input type="text" id="answer1" placeholder="Enter time...">
+                    <button onclick="checkQuizAnswer(1)">Next ✨</button>
+                    <button class="hint-button" onclick="showHint(1)">Need a Hint? 💭</button>
+                    <p class="hint" id="hint1">Ask your mom, she remembers this special moment perfectly! 🥰</p>
+                    <p class="error-message">Not quite! Try asking mom for the exact time 🤔</p>
+                </div>
+
+                <!-- Quiz Step 2 -->
+                <div class="quiz-step" id="step2">
+                    <button class="close-button" onclick="closeQuiz()">×</button>
+                    <div class="reaction-emoji">🍫</div>
+                    <h3>Sweet Tooth!</h3>
+                    <p>What's your favorite chocolate? The one you can't resist!</p>
+                    <input type="text" id="answer2" placeholder="Enter chocolate name...">
+                    <button onclick="checkQuizAnswer(2)">Yummy Next! 😋</button>
+                    <button class="hint-button" onclick="showHint(2)">Need a Hint? 💫</button>
+                    <p class="hint" id="hint2">It's the costliest one... but worth every penny! 🍫</p>
+                    <p class="error-message">Almost! Think luxury chocolate... 🤔</p>
+                </div>
+
+                <!-- Quiz Step 3 -->
+                <div class="quiz-step" id="step3">
+                    <button class="close-button" onclick="closeQuiz()">×</button>
+                    <div class="reaction-emoji">👶</div>
+                    <h3>Childhood Nickname!</h3>
+                    <p>What nickname does your mom call you by?</p>
+                    <input type="text" id="answer3" placeholder="Your special nickname...">
+                    <button onclick="checkQuizAnswer(3)">That's Me! 😊</button>
+                    <button class="hint-button" onclick="showHint(3)">Need a Hint? 💝</button>
+                    <p class="hint" id="hint3">It ends with 'appa'... Mom's special name for you! ❤️</p>
+                    <p class="error-message">Not quite! Think of mom's favorite name for you... 🤗</p>
+                </div>
+
+                <!-- Quiz Step 4 -->
+                <div class="quiz-step" id="step4">
+                    <button class="close-button" onclick="closeQuiz()">×</button>
+                    <div class="reaction-emoji">�</div>
+                    <h3>Our Connection!</h3>
+                    <p>When did I first text you? (Format: Month Day, Year)</p>
+                    <input type="text" id="answer4" placeholder="The day we first connected...">
+                    <button onclick="checkQuizAnswer(4)">Final Step! 🎉</button>
+                    <button class="hint-button" onclick="showHint(4)">Need a Hint? 📱</button>
+                    <p class="hint" id="hint4">Think back to that special conversation... ✨</p>
+                    <p class="error-message">Try again! That special day is worth remembering! 💭</p>
+                </div>                <!-- Quiz Step 2 -->
+                <div class="quiz-step" id="step2">
+                    <div class="reaction-emoji">📱</div>
+                    <h3>Memory Lane Time!</h3>
+                    <p>When did we first message each other?</p>
+                    <p class="hint">(Hint: New Year's Day of 2018 was quite special �)</p>
+                    <input type="text" id="answer2" placeholder="Format: Month Day, Year">
+                    <button onclick="checkQuizAnswer(2)">Next Challenge!</button>
+                    <p class="error-message">Almost! Remember that special New Year? �</p>
+                </div>
+
+                <!-- Quiz Step 3 -->
+                <div class="quiz-step" id="step3">
+                    <div class="reaction-emoji">🍫</div>
+                    <h3>Getting Hungry?</h3>
+                    <p>What's that sweet treat you can never resist?</p>
+                    <p class="hint">(Hint: Starts with 'F' and ends with 'o' - Your ultimate comfort food! 🍫)</p>
+                    <input type="text" id="answer3" placeholder="Your favorite sweet...">
+                    <button onclick="checkQuizAnswer(3)">Yum Yum!</button>
+                    <p class="error-message">Not quite! Think chocolatey... 😋</p>
+                </div>
+
+                <!-- Quiz Step 4 -->
+                <div class="quiz-step" id="step4">
+                    <div class="reaction-emoji">💫</div>
+                    <h3>Last One!</h3>
+                    <p>What's your favorite constellation?</p>
+                    <p class="hint">(Hint: You're born in September, and it's your zodiac! ⭐)</p>
+                    <input type="text" id="answer4" placeholder="Stars align...">
+                    <button onclick="checkQuizAnswer(4)">Final Answer!</button>
+                    <p class="error-message">Think about your star sign! ✨</p>
+                </div>
+
+                <!-- Quiz Step 5 (Final) -->
+                <div class="quiz-step" id="step5">
+                    <div class="reaction-emoji">🎉</div>
+                    <h3>You Did It!</h3>
+                    <p class="final-message">
+                        See? I made you work for your surprise! But you know what? 
+                        Just like these questions, you make life fun and interesting. 
+                        Now, are you ready for your real surprise? 🎁
+                    </p>
+                    <p class="final-message">
+                        Happy Birthday to our amazing Psychologist! May your compassionate heart 
+                        continue to heal and inspire others. Here's to a day as special as you are! 🌟
+                    </p>
+                    <button onclick="revealBirthdayContent()">Show Me! 🎉</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Constants
+        const BIRTH_DATE = new Date('2002-09-23');
+        
+        // Quiz answers and validation
+        const QUIZ_ANSWERS = {
+            1: "6.15 PM", // Birth time
+            2: "ferrero", // Favorite chocolate
+            3: "gundappa", // Childhood nickname
+            4: "January 1, 2018" // First message date
+        };
+        
+        // Multiple accepted answers for some questions
+        const ALTERNATIVE_ANSWERS = {
+            1: ["6:15 PM", "6:15PM", "6.15PM", "6:15pm", "6.15pm", "6.15 pm"],
+            2: ["ferrero rocher", "ferrero", "ferreros", "fererro", "ferrero roche"],
+            3: ["gundappa", "gundapa", "gundappah"],
+            4: ["january 1 2018", "jan 1 2018", "1st january 2018", "1 january 2018"]
+        };
+
+        // Function to check if answer is correct
+        function isCorrectAnswer(step, answer) {
+            const userAnswer = answer.toLowerCase().trim();
+            const correctAnswer = QUIZ_ANSWERS[step].toLowerCase();
+            
+            if (userAnswer === correctAnswer) return true;
+            
+            // Check alternative answers if they exist
+            if (ALTERNATIVE_ANSWERS[step]) {
+                return ALTERNATIVE_ANSWERS[step].includes(userAnswer);
+            }
+            
+            return false;
+        }
+        
+        // DOM Elements
+        const birthdaySection = document.getElementById('birthdaySection');
+        const quizModal = document.getElementById('quizModal');
+        const progressBar = document.getElementById('progressBar');
+        const ageDisplay = document.getElementById('ageDisplay');
+        
+        let currentStep = 1;
+        
+        // Quiz Functions
+        function startQuiz() {
+            quizModal.style.display = 'flex';
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const progress = ((currentStep - 1) / 4) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        function showStep(step) {
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+        
+        function checkQuizAnswer(step) {
+            const answer = document.getElementById(`answer${step}`).value.trim().toLowerCase();
+            const correctAnswer = QUIZ_ANSWERS[step].toLowerCase();
+            
+            if (step === 4) {
+                // For the last creative question, accept any answer containing "lemonade"
+                if (answer.includes('lemonade')) {
+                    showNextStep(step);
+                    return;
+                }
+            } else if (answer === correctAnswer) {
+                showNextStep(step);
+                return;
+            }
+            
+            // Show error
+            const errorMsg = document.querySelector(`#step${step} .error-message`);
+            errorMsg.style.opacity = '1';
+            setTimeout(() => errorMsg.style.opacity = '0', 2000);
+        }
+        
+        function showNextStep(currentStep) {
+            if (currentStep < 5) {
+                showStep(currentStep + 1);
+            }
+        }
+        
+        function revealBirthdayContent() {
+            quizModal.style.display = 'none';
+            birthdaySection.classList.add('show');
+            calculateAge();
+            setupCarousel();
+        }
+
+        // Function to show hints
+        function showHint(step) {
+            const hint = document.getElementById(`hint${step}`);
+            hint.classList.add('show');
+            
+            // Hide hint after 5 seconds
+            setTimeout(() => {
+                hint.classList.remove('show');
+            }, 5000);
+        }
+
+        // Function to close quiz
+        function closeQuiz() {
+            quizModal.style.display = 'none';
+        }
+
+        // Function to check quiz answer with improved validation
+        function checkQuizAnswer(step) {
+            const answer = document.getElementById(`answer${step}`).value;
+            
+            if (isCorrectAnswer(step, answer)) {
+                showNextStep(step);
+            } else {
+                const errorMsg = document.querySelector(`#step${step} .error-message`);
+                errorMsg.style.opacity = '1';
+                
+                // Shake the input to indicate wrong answer
+                const input = document.getElementById(`answer${step}`);
+                input.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    errorMsg.style.opacity = '0';
+                    input.style.animation = '';
+                }, 2000);
+            }
+        }
+
+        // Add shake animation
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Calculate and display detailed age
+        function calculateAge() {
+            const now = new Date();
+            const birth = new Date(BIRTH_DATE);
+            
+            let years = now.getFullYear() - birth.getFullYear();
+            let months = now.getMonth() - birth.getMonth();
+            let days = now.getDate() - birth.getDate();
+
+            // Adjust for negative days
+            if (days < 0) {
+                const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += lastMonth.getDate();
+                months--;
+            }
+
+            // Adjust for negative months
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Calculate hours
+            const hoursDiff = Math.floor((now - birth) / (1000 * 60 * 60));
+            
+            // Build the age string
+            let ageString = `You are ${years} years`;
+            if (months > 0) ageString += `, ${months} months`;
+            if (days > 0) ageString += `, ${days} days`;
+            ageString += ` old! 🎂`;
+            
+            // Format the age display
+            ageDisplay.innerHTML = `
+                <div>${ageString}</div>
+                <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--secondary);">
+                    That's approximately ${hoursDiff.toLocaleString()} hours of amazing life! ✨
+                </div>
+            `;
+        }
+
+        // Photo carousel functionality
+        function setupCarousel() {
+            const images = document.querySelectorAll('.carousel-image');
+            const photoCaption = document.getElementById('photoCaption');
+            let currentIndex = 0;
+            
+            function showNextImage() {
+                images.forEach(img => img.classList.remove('active'));
+                images[currentIndex].classList.add('active');
+                
+                // Update caption with alt text
+                photoCaption.textContent = images[currentIndex].alt + ' (' + images[currentIndex].dataset.year + ')';
+                
+                currentIndex = (currentIndex + 1) % images.length;
+            }
+            
+            showNextImage(); // Show first image
+            setInterval(showNextImage, 5000); // Rotate every 5 seconds to give more time to view each photo
+        }
+
+        // Answer checking functionality
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            
+            if (userAnswer === CORRECT_ANSWER) {
+                // Hide treasure hunt section
+                treasureHunt.classList.add('fade-out');
+                
+                // Show birthday section after fade out
+                setTimeout(() => {
+                    treasureHunt.style.display = 'none';
+                    birthdaySection.classList.add('show');
+                    calculateAge();
+                    setupCarousel();
+                }, 500);
+            } else {
+                // Show error message
+                errorMessage.style.opacity = '1';
+                setTimeout(() => {
+                    errorMessage.style.opacity = '0';
+                }, 2000);
+                
+                // Clear input
+                answerInput.value = '';
+            }
+        }
+
+        // Enter key functionality
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Function to show birthday section directly
+        function showBirthdaySection() {
+            treasureHunt.classList.add('fade-out');
+            setTimeout(() => {
+                treasureHunt.style.display = 'none';
+                birthdaySection.classList.add('show');
+                calculateAge();
+                setupCarousel();
+            }, 500);
+        }
+    </script>
+</body>
+</html>

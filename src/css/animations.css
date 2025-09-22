@@ -1,0 +1,48 @@
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+    50% { 
+        text-shadow: 0 0 20px rgba(255,255,255,0.8),
+                    0 0 30px var(--primary-color),
+                    0 0 40px var(--primary-color);
+    }
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); }
+    100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+@keyframes balloonFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(10px, -15px); }
+}
+
+.gift-box.open .lid {
+    transform: rotateX(-110deg);
+}
+
+.birthday-message.show {
+    display: block;
+    animation: glow 2s ease-in-out infinite;
+}
+
+.balloon {
+    position: absolute;
+    width: 30px;
+    height: 40px;
+    border-radius: 50%;
+    animation: float 3s ease-in-out infinite, balloonFloat 5s ease-in-out infinite;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    animation: confettiFall 4s linear forwards;
+    opacity: 0.8;
+}
