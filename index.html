@@ -1159,6 +1159,83 @@
                 margin: 0 auto;
             }
         }
+        /* Mobile Fixes for Moon and Journey Sections */
+        @media screen and (max-width: 480px) {
+            .moon-section {
+                padding: 1rem;
+                margin: 1rem 0.5rem;
+            }
+
+            .moon-container {
+                width: 280px;
+                height: 280px;
+                margin: 0 auto 1rem;
+            }
+
+            .moon-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+
+            .moon-description {
+                padding: 1rem;
+            }
+
+            .moon-text {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .journey-section {
+                padding: 1.5rem 1rem;
+            }
+
+            .journey-photos {
+                width: 300px;
+                height: 300px;
+                transform: scale(0.8);
+                margin: 1rem auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .journey-photo {
+                width: 100px;
+            }
+
+            .journey-photo img {
+                width: 90px;
+                height: 90px;
+                object-fit: cover;
+            }
+
+            .photo-year {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.6rem;
+            }
+
+            /* Adjust photo positions for better visibility */
+            .journey-photo:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg) translateX(-150px) rotate(0deg); }
+            .journey-photo:nth-child(2) { transform: translate(-50%, -50%) rotate(72deg) translateX(-150px) rotate(-72deg); }
+            .journey-photo:nth-child(3) { transform: translate(-50%, -50%) rotate(144deg) translateX(-150px) rotate(-144deg); }
+            .journey-photo:nth-child(4) { transform: translate(-50%, -50%) rotate(216deg) translateX(-150px) rotate(-216deg); }
+            .journey-photo:nth-child(5) { transform: translate(-50%, -50%) rotate(288deg) translateX(-150px) rotate(-288deg); }
+        }
+
+        /* Small height screens */
+        @media screen and (max-height: 700px) {
+            .moon-container {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .journey-photos {
+                transform: scale(0.7);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1185,8 +1262,8 @@
                 </div>
                 <div class="journey-photos">
                     <div class="journey-photo" style="--rotation: 0deg;">
-                        <img src="./images/pic1.png" alt="Little Angel" class="timeline-image">
-                        <p class="photo-year">2003 ✨</p>
+                        <img src="./images/pic1.png" alt="Little Angel" class="timeline-image" loading="eager">
+                        <p class="photo-year">2003</p>
                     </div>
                     <div class="journey-photo" style="--rotation: 72deg;">
                         <img src="./images/new1.jpeg" alt="Growing Years" class="timeline-image">
