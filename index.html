@@ -772,20 +772,36 @@
         @media (max-width: 480px) {
             .container {
                 padding: 1rem;
+                overflow-x: hidden;
             }
             .journey-photos {
-                transform: scale(0.5);
-                margin: -50px auto;
+                transform: scale(0.45);
+                margin: -60px auto;
+                height: 280px;
+            }
+            .journey-photo {
+                width: 100px;
+                height: 100px;
+            }
+            .journey-photo:nth-child(1),
+            .journey-photo:nth-child(2),
+            .journey-photo:nth-child(3),
+            .journey-photo:nth-child(4),
+            .journey-photo:nth-child(5) {
+                transform: translate(-50%, -50%) rotate(var(--rotation)) translateX(-140px) rotate(calc(-1 * var(--rotation)));
             }
             .journey-text {
                 font-size: 1rem;
                 padding: 0.8rem;
+                margin: 0.5rem;
             }
             .gallery {
                 grid-template-columns: 1fr;
+                padding: 0.5rem;
             }
             .future-cards {
                 grid-template-columns: 1fr;
+                padding: 0.5rem;
             }
             .birthday-title h2 {
                 font-size: 2rem;
@@ -793,6 +809,13 @@
             .message {
                 margin: 1.5rem 0.5rem;
                 padding: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+                margin: 1rem 0;
+            }
+            .memory-caption {
+                font-size: 0.9rem;
             }
         }
 
@@ -1370,7 +1393,7 @@
 
             <div class="future-glimpses">
                 <h2 class="section-title">Future Birthday Snaps! 🚀</h2>
-                <p class="future-text">Hey! We asked AI to imagine how you might look in the future... and wow, looks like you're going to rock every decade! �</p>
+                <p class="future-text">Hey! We asked AI to imagine how you might look in the future... and wow, looks like you're going to rock every decade! </p>
                 
                 <div class="timeline-scroll">
                     <div class="future-cards">
